@@ -26,7 +26,7 @@ $(document).ready(function(){
 		for(i=0; i < ipL.length; i++)
 			if(!protocol.isValid(ipL[i]))
 			{
-				alert("Error: '" + ipL[i] + "' is not a valid IP address.  Please fix before proceeding");
+				alert("Error: '" + ipL[i] + "' is not a valid IP address in this context.  Please fix before proceeding");
 				return;
 			}
 

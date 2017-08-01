@@ -2,6 +2,9 @@
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="index.css">
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="https://unpkg.com/ipaddr.js@1.4.0/ipaddr.min.js"></script>
@@ -9,6 +12,14 @@
 </head>
 
 <body>
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <ul class="nav navbar-nav navbar-right">
+			<li><a href="https://en.wikipedia.org/wiki/User:Fastily">AUTHOR</a></li>
+			<li><a href="https://github.com/fastily/ip-range-calc">SOURCE</a></li>
+	    </ul>
+	  </div>
+	</nav>
 	<div class="jumbotron text-center">
 		<h1>ip-range-calc</h1>
 	</div>
@@ -42,6 +53,11 @@
 			<div class="well" id="resultBox">...</div>
 		</div>
 	</div>
-
+	
+	<footer class="container-fluid text-center footer">
+		<p>
+			Powered by <a href="https://tools.wmflabs.org">WMF toolforge</a> &mdash; &copy; 2017, Fastily, <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a>
+		</p>
+	</footer>
 </body>
 </html>
