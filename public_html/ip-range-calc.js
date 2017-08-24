@@ -21,7 +21,7 @@ $(document).ready(function(){
 
 		var cnt = $("#protocol-select option:selected").val();
 		var protocol = cnt == 32 ? ipaddr.IPv4 : ipaddr.IPv6;
-		var ipL = boxText.split("\n");;
+		var ipL = boxText.split("\n");
 
 		for(i=0; i < ipL.length; i++)
 			if(!protocol.isValid(ipL[i]))
