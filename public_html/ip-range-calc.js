@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	var calcCIDR = function(ipL, cnt) {
+	var calcCIDR = function(ipL, cnt, protocol) {
 
 		var addrs = [];
 		for(i=0; i < ipL.length; i++)
@@ -10,6 +10,9 @@ $(document).ready(function(){
 			for(i = 1; i < addrs.length; i++)
 				while(!addrs[i].match(addrs[0], cnt) && cnt > 0)
 					cnt--;
+
+		if((Object.is(ipaddr.IPv4, protocol) && cnt < 16) || (Object.is(ipaddr.IPv6, protocol) && cnt < 19))
+		   $('#outOfRangeWarning').text("WARNING: MediaWiki prohibits rangeblocks this large.  Try experimenting multiple, smaller ranges.");
 
 		return addrs[0].toString() + "/" + cnt;
 	};
@@ -30,6 +33,7 @@ $(document).ready(function(){
 				return;
 			}
 
-		$('#resultBox').text(calcCIDR(ipL, cnt));
+		$('#outOfRangeWarning').text("");
+		$('#resultBox').text(calcCIDR(ipL, cnt, protocol));
 	});
 });
