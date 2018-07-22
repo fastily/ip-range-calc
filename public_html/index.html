@@ -1,66 +1,144 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-	<link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-	<link href="https://tools-static.wmflabs.org/fontcdn/css?family=Open+Sans|Roboto" rel="stylesheet">
+	<link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css"
+	 integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 
-	<link rel="stylesheet" href="index.css">
+	<title>ip-range-calc - calcuate a rangeblock right in your browser</title>
 </head>
 
 <body>
-	<nav class="navbar navbar-default">
-	  <div class="container-fluid">
-	    <ul class="nav navbar-nav navbar-right">
-			<li><a href="https://en.wikipedia.org/wiki/User:Fastily">AUTHOR</a></li>
-			<li><a href="https://github.com/fastily/ip-range-calc">SOURCE</a></li>
-	    </ul>
-	  </div>
-	</nav>
-	<div class="jumbotron text-center">
-		<h1>ip-range-calc</h1>
-	</div>
+	<div class="main-wrapper">
+		<nav class="navbar navbar-expand-md navbar-light bg-light">
+			<div class="container">
+				<!-- <a class="navbar-brand" href="#">ip-range-calc</a> -->
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+				 aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-	<div class="container">
-		<div class="form-group">
-			<label for="ipBox">IP Addresses (one per line):</label>
-			<textarea class="form-control" rows="5" id="ipBox"></textarea>
-		</div>
-
-		<form role="form" class="form-horizontal">
-			<fieldset>
-				<div class="form-group">
-					<label class="col-sm-1 control-label">Using:</label>
-					<div class="col-sm-2">
-						<select class="form-control" id="protocol-select">
-							<option selected="selected" value="32">ipv4</option>
-							<option value="128">ipv6</option>
-						</select>
-					</div>
-					<button type="button" class="btn btn-primary col-sm-1" id="goButton">Calculate</button>
-
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="https://meta.wikimedia.org/wiki/User:Fastily">Author</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="https://github.com/fastily/ip-range-calc">Source</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="https://tools.wmflabs.org">Toolforge</a>
+						</li>
+					</ul>
 				</div>
-			</fieldset>
-		</form>
+			</div>
+		</nav>
 
-		<div class="form-group">
-			<label for="resultBox">Result:</label>
-			<div class="well" id="resultBox">...</div>
+		<div class="container" id="app">
+			<div class="jumbotron">
+				<h1 class="display-4">ip-range-calc</h1>
+				<p class="lead">(The simple range block calculator)</p>
+			</div>
+
+			<form>
+				<div class="form-group">
+					<label for="mainTextInput">First, list the IP addresses (one per line):</label>
+					<textarea class="form-control" rows="5" id="mainTextInput" v-model.trim="inputText"></textarea>
+				</div>
+				<div class="form-group">
+					<label for="selectIpType">Next, what kind of IP addresses are these?</label>
+					<select class="form-control" id="selectIpType" v-model="selectedIPType">
+						<option v-for="ipType in ipTypes" :key="ipType" :value="ipType">IPv{{ipType}}</option>
+					</select>
+				</div>
+
+				<button type="button" class="btn btn-primary" @click.prevent="calculate">Calculate!</button>
+
+				<hr>
+				<div class="card" v-if="showResult">
+					<div class="card-header">
+						Your Result:
+					</div>
+					<div class="card-body">
+						{{resultText}}
+					</div>
+				</div>
+
+			</form>
+
+			<p class="alert alert-danger" role="alert" v-if="showBigRangeWarning">MediaWiki prohibits rangeblocks this large. Try experimenting with multiple, smaller ranges.</p>
 		</div>
 
-		<p class="text-danger" id="outOfRangeWarning"></p>
-	</div>
+		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.3.1/jquery.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		 crossorigin="anonymous"></script>
+		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		 crossorigin="anonymous"></script>
+		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+		 crossorigin="anonymous"></script>
+		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/vue/2.5.16/vue.min.js"></script>
+		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/ipaddr.js/1.8.0/ipaddr.min.js"></script>
 
-	
-	<footer class="container-fluid text-center footer">
-		<p>
-			Powered by <a href="https://tools.wmflabs.org">WMF toolforge</a> &mdash; &copy; 2017 Fastily &mdash; <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a>
-		</p>
-	</footer>
 
-	<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/ipaddr.js/1.6.0/ipaddr.min.js"></script>
-	<script type="text/javascript" src="ip-range-calc.js"></script>
+		<script>
+			new Vue({
+				el: "#app",
+				data: {
+					ipTypes: ["4", "6"],
+					inputText: "",
+					selectedIPType: "",
+					resultText: "",
+					showBigRangeWarning: false,
+					showResult: false
+				},
+				methods: {
+					calculate() {
+						this.showBigRangeWarning = false;
+
+						if (!this.inputText || !this.selectedIPType)
+							return;
+
+						var protocol;
+						var cnt;
+						if (this.selectedIPType === "4") {
+							protocol = ipaddr.IPv4;
+							cnt = 32;
+						}
+						else {
+							protocol = ipaddr.IPv6;
+							cnt = 128;
+						}
+
+						var ipL = this.inputText.split("\n");
+
+						// validate and parse IP addresses from user input
+						var addrs = [];
+						for (i = 0; i < ipL.length; i++) {
+							if (!protocol.isValid(ipL[i]))
+								return alert("Error: '" + ipL[i] + "' is not a valid IP address in this context.  Please fix before proceeding");
+
+							addrs.push(ipaddr.parse(ipL[i]));
+						}
+
+						// count backwards until we get a CIDR match
+						if (addrs.length > 1)
+							for (i = 1; i < addrs.length; i++)
+								while (!addrs[i].match(addrs[0], cnt) && cnt > 0)
+									cnt--;
+
+						// show warning for big ranges
+						if (ipaddr.IPv4 === protocol && cnt < 16 || ipaddr.IPv6 === protocol && cnt < 19)
+							this.showBigRangeWarning = true;
+
+						this.showResult = true;
+						this.resultText = addrs[0].toString() + "/" + cnt;
+					}
+				}
+			});
+		</script>
 </body>
+
 </html>
